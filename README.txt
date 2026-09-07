@@ -8,7 +8,7 @@ using JDK1.8 for target JRE1.7
 package org.miktim.xmlgen;
 
 class Node;
-  Node is XML element node.
+  Node is an XML element node.
 
   Constructors:
     Node(String nodeName);
@@ -18,9 +18,9 @@ class Node;
           new Node("prop");
     Node(String nodeName, Object content);
       Creates a text node.
-      - escapes ("<", ">", "&") the text (String instance) content;
       - converts the content object into its String representation;
       - checks the content string for illegal characters (0x0-0x8,...,0x7F);
+      - escapes ("<", ">", "&") the text (String instance) content;
       - the content can be null.
         Examples:
           new Node("R:author", "John Doe");
@@ -78,7 +78,7 @@ class Node;
     static String CDATA(Object content);
       - converts the content object into its String representation
         and creates CDATA section;
-      - replaces "]]>" with "<![CDATA[]]]><![CDATA[>]>", if any.
+      - escapes "]]>" with "<![CDATA[]]]><![CDATA[>]>", if any.
 
     String toString();
       - returns XML text as a single line.

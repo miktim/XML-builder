@@ -16,7 +16,7 @@ public class Node {
     }
 
     public Node(String nodeName) {
-        this.nodeTag = checkName(nodeName.trim());
+        this.nodeTag = checkName(nodeName);
     }
 
     public Node(String nodeName, Object content) {
@@ -24,18 +24,22 @@ public class Node {
         if (content == null) {
             return;
         }
+        String text = checkChars(String.valueOf(content));
         if (content instanceof String) {
-            if (((String) content).isEmpty()) {
+            if (text.isEmpty()) {
                 return;
             }
-            if(!isCDATA((String)content))
-                content = escape((String) content);
+            if(!isCDATA(text)){ 
+                text = escape(text);
+            }
         }
-        nodeList.add(checkChars(String.valueOf(content)));
+        nodeList.add(text);
     }
     
+    private static String NAME_PATTERN = format("^%s$", XML.NAME_PATTERN);
+
     private static String checkName(String name) {
-        if (name.matches(XML.NAME_PATTERN)) {
+        if (name.matches(NAME_PATTERN)) {
             return name;
         }
         throw new IllegalArgumentException("illegal name: " + name);
@@ -58,6 +62,13 @@ public class Node {
         return content.startsWith("<![CDATA[") && content.endsWith("]]>");
     }
 
+    public static String escape(String value) {
+        return value
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;");
+    }
+
     public final Node setNode(Node node) {
         if (node == null) {
             throw new NullPointerException("node");
@@ -78,7 +89,8 @@ public class Node {
 
     static Node dereferenceXml(Node node) {
         if (node instanceof XML) {
-            Node newNode = new Node(node.nodeTag);
+            Node newNode = new Node();
+            newNode.nodeTag = node.nodeTag;
             newNode.nodeList = node.nodeList;
             return newNode;
         }
@@ -87,7 +99,7 @@ public class Node {
     
     public Node addAttr(String attrName, String value) {
             nodeTag += format(" %s=\"%s\"",
-                    checkAttr(attrName.trim()),
+                    checkAttr(attrName),
                     escape(checkChars(value)).replaceAll("\"", "&quot;"));
         return this;
     }
@@ -138,12 +150,6 @@ public class Node {
         return this;
     }
 */
-    public static String escape(String value) {
-        return value
-                .replaceAll("&", "&amp;")
-                .replaceAll("<", "&lt;")
-                .replaceAll(">", "&gt;");
-    }
 
     @Override
     public String toString() {

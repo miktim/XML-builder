@@ -71,6 +71,13 @@ public class TestNode {
         testNode(node,expected);
 
         try {
+            node = new Node("node","text").addAttr(" attr","abcd");
+            logErr(node + "\r\nFailed!");
+        } catch (Exception e) {
+            log(e + "\r\nOk");
+        }
+
+        try {
             node = (new Node("node")).addAttr("attr","value","attr","value");
             logErr(node + "\r\nFailed!");
         } catch (Exception e) {

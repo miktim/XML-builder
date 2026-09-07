@@ -58,7 +58,7 @@ public class TestXMLgen {
     }
 
     public static void main(String[] args) throws Exception {
-        XML xml = new XML(new Node("Root", "content"));
+        XML xml = new XML(new Node("Root", "content").addAttr("attr","value"));
         xml.addNode("Child");
         log(xml);
         xml = new XML(new Node("Root"));
@@ -131,6 +131,12 @@ public class TestXMLgen {
         xml = new XML((new Node("node",Node.CDATA(Node.CDATA(new Node("node"))))));
         log(xml);
         checkXml(xml.toString(), true);
+        log("Ok");
+
+        xml = new XML((new XML(new Node("node")).addAttr("attr", "value")));
+        xml.addNode((new XML(new Node("node")).addAttr("attr", "value")));
+        log(xml);
+        checkXml(xml.toString(), false);
         log("Ok");
        
     }

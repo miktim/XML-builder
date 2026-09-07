@@ -1,3 +1,5 @@
+3.2.2
+  - fixed Node: checking name node/attr
 3.2.1
   - fixed Node: checking values for illegal chars (0x0-0x8,...,0x7F)
   - fixed Node.CDATA: escaping "]]>" 
