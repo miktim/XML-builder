@@ -1,5 +1,5 @@
 /*
- * XMLgen Node, MIT (c) 2026 miktim@mail.ru
+ * XML builder Node, MIT (c) 2026 miktim@mail.ru
  */
 package org.miktim.xml.builder;
 
