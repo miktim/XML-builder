@@ -1,8 +1,6 @@
 /*
- * XMLgen. Node test, MIT (c) 2026 miktim@mail.ru
+ * XML builder. Node test, MIT (c) 2026 miktim@mail.ru
  */
-
-package xmlgen;
 
 import org.miktim.xml.builder.Node;
 

@@ -1,5 +1,5 @@
 /*
- * XML builder XML, MIT (c) 2026 miktim@mail.ru
+ * XML builder. XML, MIT (c) 2026 miktim@mail.ru
  */
 package org.miktim.xml.builder;
 
