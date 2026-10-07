@@ -1,11 +1,12 @@
-XMLgen - The simplest? XML generator, MIT (c) 2026 miktim@mail.ru
+XMLbuilder - The simple XML builder, MIT (c) 2026 miktim@mail.ru
 
-This is an attempt to implement the simplest XML generator.
+This is an attempt to implement the simplest XML builder
+without using Java XML packages.
 
-The jar ./dist/xmlgen-... file was generated with debugging info
+The jar ./dist/xml-builder-... file was generated with debugging info
 using JDK1.8 for target JRE1.7
 
-package org.miktim.xmlgen;
+package org.miktim.xml.builder;
 
 class Node;
   Node is an XML element node.
@@ -20,7 +21,7 @@ class Node;
       Creates a text node.
       - converts the content object into its String representation;
       - checks the content string for illegal characters (0x0-0x8,...,0x7F);
-      - escapes ("<", ">", "&") the text (String instance) content;
+      - escapes ("<", ">", "&") the text content;
       - the content can be null.
         Examples:
           new Node("R:author", "John Doe");
@@ -30,7 +31,11 @@ class Node;
       IllegalArgumentException: when the node name is empty or syntactically incorrect.
 
   Methods:
-    Node addAttr(String attrName, String attrValue)
+    Node clone();
+      - returns a shallow copy of this Node instance:
+        the child nodes themselves are not cloned.
+
+    Node addAttr(String attrName, String attrValue);
       Adds an attribute to the node tag.
       - checks the value for illegal characters (0x0-0x8,...,0x7F);
       - the attribute value will be escaped ("\"","<",">","&")
@@ -104,6 +109,9 @@ class XML extends Node;
       - writes XML text, encoded in the specified charset,
         to the output stream and closes this stream.
 
+    Throws:
+      DataBindingException: if the prefix is not bound
+    
   Notes:
     - XML text is a single line;
     - In Java 17 and earlier, the default charset was dynamic;

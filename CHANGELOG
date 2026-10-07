@@ -1,3 +1,8 @@
+3.2.3
+  - XML,Node: check for prefixes binding added
+  - fixed Node: nodeTag immutability
+  - Node: clone method added
+  - fixed Node: escaping text content
 3.2.2
   - fixed Node: checking name node/attr
 3.2.1

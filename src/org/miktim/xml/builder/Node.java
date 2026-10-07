@@ -1,22 +1,31 @@
 /*
  * XMLgen Node, MIT (c) 2026 miktim@mail.ru
  */
-package org.miktim.xmlgen;
+package org.miktim.xml.builder;
 
 import static java.lang.String.format;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class Node {
-
-    String nodeTag = null;
-    ArrayList<Object> nodeList = new ArrayList<>(); // not Thread-safe
+    Head hd = new Head();
+    
+    protected class Head {
+        String nodeTag = null;
+        ArrayList<Object> nodeList = new ArrayList<>(); // not Thread-safe
+        HashSet<String> nsPrefs = new HashSet<>(); // declared prefixes
+        HashSet<String> prefs = new HashSet<>(); // used prefixes
+    }
 
     protected Node() {
 
     }
 
     public Node(String nodeName) {
-        this.nodeTag = checkName(nodeName);
+        hd.nodeTag = checkName(nodeName);
+        String[] names = nodeName.split(":");
+        if(names.length > 1)
+            hd.prefs.add(names[0]);
     }
 
     public Node(String nodeName, Object content) {
@@ -25,24 +34,27 @@ public class Node {
             return;
         }
         String text = checkChars(String.valueOf(content));
-        if (content instanceof String) {
+//        if (content instanceof String) {
             if (text.isEmpty()) {
                 return;
             }
             if(!isCDATA(text)){ 
                 text = escape(text);
             }
-        }
-        nodeList.add(text);
+//        }
+        hd.nodeList.add(text);
     }
     
     private static String NAME_PATTERN = format("^%s$", XML.NAME_PATTERN);
 
     private static String checkName(String name) {
-        if (name.matches(NAME_PATTERN)) {
-            return name;
+        if (!name.matches(NAME_PATTERN)) {
+            throw new IllegalArgumentException("illegal name: " + name);
         }
-        throw new IllegalArgumentException("illegal name: " + name);
+//        for(String nm : name.toLowerCase().split(":"))
+//            if(!nm.equals("xmlns") && nm.startsWith("xml"))
+//                throw new IllegalArgumentException("illegal name: " + name);
+        return name;
     }
     
     private static String checkChars(String value) {
@@ -74,7 +86,7 @@ public class Node {
             throw new NullPointerException("node");
         }
         node = dereferenceXml(node);
-        nodeList.add(node);
+        hd.nodeList.add(node);
         return node;
     }
 
@@ -83,24 +95,30 @@ public class Node {
             throw new NullPointerException("node");
         }
         node = dereferenceXml(node);
-        nodeList.add(node);
+        hd.nodeList.add(node);
         return this;
     }
 
     static Node dereferenceXml(Node node) {
         if (node instanceof XML) {
             Node newNode = new Node();
-            newNode.nodeTag = node.nodeTag;
-            newNode.nodeList = node.nodeList;
+            newNode.hd = node.hd;
             return newNode;
         }
         return node;
     }
     
     public Node addAttr(String attrName, String value) {
-            nodeTag += format(" %s=\"%s\"",
-                    checkAttr(attrName),
-                    escape(checkChars(value)).replaceAll("\"", "&quot;"));
+        hd.nodeTag += format(" %s=\"%s\"",
+                checkAttr(attrName),
+                escape(checkChars(value)).replaceAll("\"", "&quot;"));
+        String[] names = attrName.split(":");
+        if(names.length > 1) {
+            if(names[0].equals("xmlns"))
+                hd.nsPrefs.add(names[1]);
+            else
+                hd.prefs.add(names[0]);
+        }
         return this;
     }
     
@@ -113,7 +131,7 @@ public class Node {
 
     private String checkAttr(String attrName) {
         attrName = checkName(attrName);
-        if(!nodeTag.contains(format(" %s=", attrName)))
+        if(!hd.nodeTag.contains(format(" %s=", attrName)))
             return attrName;
         throw new IllegalArgumentException("duplicate attr: " + attrName);
     }
@@ -141,7 +159,7 @@ public class Node {
     public Node addComment(String comment) {
         if(comment.contains("--") || comment.endsWith("-"))
             throw new IllegalArgumentException("illegal comment");
-        nodeList.add(format("<!-- %s -->",comment));
+        hd.nodeList.add(format("<!-- %s -->",comment));
         return this;
     }
 /*    
@@ -150,18 +168,27 @@ public class Node {
         return this;
     }
 */
-
+    @Override
+    public Node clone() {
+        Node newNode = new Node();
+        newNode.hd.nodeTag = hd.nodeTag;
+        newNode.hd.nodeList = new ArrayList<Object>(hd.nodeList);
+        newNode.hd.nsPrefs = new HashSet<String>(hd.nsPrefs);
+        newNode.hd.prefs = new HashSet<String>(hd.prefs);
+        return newNode;
+    }
+    
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         String endTag = "";
-        if (nodeList.isEmpty()) {
-            sb.append(format("<%s/>", nodeTag));
+        if (hd.nodeList.isEmpty()) {
+            sb.append(format("<%s/>", hd.nodeTag));
         } else {
-            sb.append(format("<%s>", nodeTag));
-            endTag = format("</%s>", nodeTag.split(" ", 2)[0]);
+            sb.append(format("<%s>", hd.nodeTag));
+            endTag = format("</%s>", hd.nodeTag.split(" ", 2)[0]);
         }
-        for (Object node : nodeList) {
+        for (Object node : hd.nodeList) {
             sb.append(node.toString());
         }
         sb.append(endTag);

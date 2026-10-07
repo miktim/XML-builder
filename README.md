@@ -1,14 +1,19 @@
 
-This is an attempt to implement the simplest XML generator.  
+This is an attempt to implement the simplest XML builder without using Java XML packages.  
 
 Look First:  
+XMLBuilder: [https://github.com/simonemmott/XMLBuilder](https://github.com/simonemmott/XMLBuilder)  
+  
+XMLBuilder: [https://github.com/atulsm/XMLBuilder/tree/master](https://github.com/atulsm/XMLBuilder/tree/master)  
+XISS: [https://github.com/mschrag/xiss/tree/master](https://github.com/mschrag/xiss/tree/master)  
 java-xmlbuilder: [https://github.com/jmurty/java-xmlbuilder](https://github.com/jmurty/java-xmlbuilder)  
 xembly: [https://github.com/yegor256/xembly](https://github.com/yegor256/xembly)  
 simpleXml: [https://github.com/codemonstur/simplexml](https://github.com/codemonstur/simplexml)  
 
-XMLgen Usage (Java):
+Package Usage (Java):  
 ```java
-XML xml = new XML((new Node("multistatus")).addAttr("xmlns","DAV:"));
+Node rootNode = (new Node("multistatus")).addAttr("xmlns","DAV:");
+XML xml = new XML(rootNode);
 xml.setNode("response")
      .addNode("href", Node.CDATA("http://www.example.com/container/"))
      .setNode("propstat")
@@ -22,7 +27,7 @@ xml.setNode("response")
 ```  
 The xml.toString() method returns the following XML text (actually as a single line):
 ```xml
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <multistatus xmlns="DAV:">
   <response>
     <href><![CDATA[http://www.example.com/container/]]></href>

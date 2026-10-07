@@ -4,7 +4,7 @@
 
 package xmlgen;
 
-import org.miktim.xmlgen.Node;
+import org.miktim.xml.builder.Node;
 
 public class TestNode {
 
@@ -63,7 +63,8 @@ public class TestNode {
 
         node = new Node("node", "text");
         node.setNode("child",new Node("number",12));
-        expected = "<node>text<child><number>12</number></child></node>";
+//        expected = "<node>text<child><number>12</number></child></node>";
+        expected = "<node>text<child>&lt;number&gt;12&lt;/number&gt;</child></node>";
         testNode(node, expected);
 
         node = (new Node("node", "<&>'\"")).addAttr("attr","<&>'\"");

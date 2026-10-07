@@ -12,13 +12,13 @@ import java.io.InputStream;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import org.miktim.xmlgen.Node;
+import org.miktim.xml.builder.Node;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-import org.miktim.xmlgen.XML;
+import org.miktim.xml.builder.XML;
 import org.xml.sax.Attributes;
 
-public class TestXMLgen {
+public class TestXML {
 
     static void log(Object obj) {
         System.out.println(obj);
@@ -83,6 +83,13 @@ public class TestXMLgen {
         log(xml + "\r\n");
         checkXml(xml.toString(), true);
         log("Ok");//CRLF
+        log("XML clone");
+        if(xml.toString().equals((new XML(xml.clone())).toString()))
+            log("Ok");
+        else {
+            log("FAILED!");
+            System.exit(1);
+        }            
         xml = new XML((new Node("ТекстовыйУзел", "текст"))
                 .addAttr("xmlns:префикс","DAV:", "attr","value\" "));
         xml.addNode("префикс:ДочернийУзел","текст");
