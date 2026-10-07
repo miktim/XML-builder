@@ -9,14 +9,11 @@ import java.io.UnsupportedEncodingException;
 import static java.lang.String.format;
 import java.nio.charset.Charset;
 import java.util.HashSet;
-import javax.xml.bind.DataBindingException;
 
 public class XML extends Node {
 
     public XML(Node rootNode) {
         hd = rootNode.hd;
-//        nodeTag = rootNode.nodeTag;
-//        nodeList = rootNode.nodeList;
     }
 
     public static final String NAME_PATTERN
@@ -58,8 +55,7 @@ public class XML extends Node {
         thisNsPrefs.addAll(node.hd.nsPrefs);
         for(String pref : node.hd.prefs) {
             if(!thisNsPrefs.contains(pref))
-// The prefix "R" for element "R:author" is not bound.
-                throw new DataBindingException("prefix is not bound: " + pref, null);
+                throw new IllegalArgumentException("prefix is not bound: " + pref, null);
         }
 // scan nodeList
         for(Object entry : node.hd.nodeList) {

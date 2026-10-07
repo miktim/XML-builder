@@ -110,7 +110,7 @@ class XML extends Node;
         to the output stream and closes this stream.
 
     Throws:
-      DataBindingException: if the prefix is not bound
+      IllegalArgumentException: if the prefix is not bound.
     
   Notes:
     - XML text is a single line;

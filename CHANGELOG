@@ -1,3 +1,6 @@
+3.2.4
+  - fixed XML: Android does not support javax.xml.bind.DataBindingException:
+    replaced with IllegalArgumentException
 3.2.3
   - XML,Node: check for prefixes binding added
   - fixed Node: nodeTag immutability
