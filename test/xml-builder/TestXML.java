@@ -103,11 +103,11 @@ public class TestXML {
         FileOutputStream fos = new FileOutputStream(file);
         xml.toStream(new FileOutputStream(file), encoding);
         fos.close();
-        if (xml.toString(encoding).length() != file.length()) {
+        if (xml.toString(encoding).getBytes(encoding).length != file.length()) {
             throw new Exception("Length mismatch");
         }
         FileInputStream fis = new FileInputStream(file);
-        checkXml(fis, false);
+        checkXml(fis, true);
         file.delete();
         log("Ok");
 

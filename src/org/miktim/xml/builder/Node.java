@@ -11,8 +11,8 @@ public class Node {
     Head hd = new Head();
     
     protected class Head {
-        String nodeTag = null;
-        ArrayList<Object> nodeList = new ArrayList<>(); // not Thread-safe
+        String nodeTag = null; // node name and attributes
+        ArrayList<Object> nodeList = new ArrayList<>(); // text and child nodes
         HashSet<String> nsPrefs = new HashSet<>(); // declared prefixes
         HashSet<String> prefs = new HashSet<>(); // used prefixes
     }
@@ -131,9 +131,9 @@ public class Node {
 
     private String checkAttr(String attrName) {
         attrName = checkName(attrName);
-        if(!hd.nodeTag.contains(format(" %s=", attrName)))
-            return attrName;
-        throw new IllegalArgumentException("duplicate attr: " + attrName);
+        if(hd.nodeTag.contains(format(" %s=", attrName)))
+            throw new IllegalArgumentException("duplicate attr: " + attrName);
+        return attrName;
     }
 
     public Node setNode(String nodeName) {
@@ -170,12 +170,12 @@ public class Node {
 */
     @Override
     public Node clone() {
-        Node newNode = new Node();
-        newNode.hd.nodeTag = hd.nodeTag;
-        newNode.hd.nodeList = new ArrayList<Object>(hd.nodeList);
-        newNode.hd.nsPrefs = new HashSet<String>(hd.nsPrefs);
-        newNode.hd.prefs = new HashSet<String>(hd.prefs);
-        return newNode;
+        Node clone = new Node();
+        clone.hd.nodeTag = hd.nodeTag;
+        clone.hd.nodeList = new ArrayList<Object>(hd.nodeList);
+        clone.hd.nsPrefs = new HashSet<String>(hd.nsPrefs);
+        clone.hd.prefs = new HashSet<String>(hd.prefs);
+        return clone;
     }
     
     @Override
