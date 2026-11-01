@@ -15,7 +15,7 @@ simpleXml: [https://github.com/codemonstur/simplexml](https://github.com/codemon
 An example of using this package (Java):
 ```java
 XML xml = new XML("multistatus");
-xml.attr("xmlns","DAV:");
+xml.attr("xmlns","DAV:")
   .set("response")
     .add("href").cdata("http://www.example.com/container/")
     .set("propstat")
