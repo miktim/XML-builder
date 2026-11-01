@@ -12,10 +12,10 @@ import java.util.HashSet;
 
 public class XML extends Node {
 
-    public XML(Node rootNode) {
-        hd = rootNode.hd;
+    public XML(String nodeName) {
+        super(nodeName);
     }
-
+    
     public static final String NAME_PATTERN
             = "([_\\p{L}][._\\p{L}0-9]*)(:([_\\p{L}][._\\p{L}0-9]*))*";
 
@@ -26,20 +26,20 @@ public class XML extends Node {
                 + super.toString();
     }
 
-    public String toString(String charset) throws UnsupportedEncodingException {
+    public String toString(String charsetName) throws UnsupportedEncodingException {
         checkPrefs(this, new HashSet<String>());
-        String xml = getDeclaration(charset) + super.toString();
-        return new String(xml.getBytes(charset));
+        String xml = getDeclaration(charsetName) + super.toString();
+        return new String(xml.getBytes(charsetName));
     }
 
     public void toStream(OutputStream out) throws IOException {
         toStream(out, Charset.defaultCharset().toString());
     }
 
-    public void toStream(OutputStream out, String charset) throws IOException {
+    public void toStream(OutputStream out, String charsetName) throws IOException {
         checkPrefs(this, new HashSet<String>());
         byte[] bytes = 
-                (getDeclaration(charset) + super.toString()).getBytes(charset);
+                (getDeclaration(charsetName) + super.toString()).getBytes(charsetName);
         out.write(bytes);
         out.flush();
         out.close();
@@ -55,7 +55,7 @@ public class XML extends Node {
         thisNsPrefs.addAll(node.hd.nsPrefs);
         for(String pref : node.hd.prefs) {
             if(!thisNsPrefs.contains(pref))
-                throw new IllegalArgumentException("prefix is not bound: " + pref, null);
+                throw new IllegalArgumentException("prefix is not bound: " + pref);
         }
 // scan nodeList
         for(Object entry : node.hd.nodeList) {

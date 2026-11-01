@@ -11,7 +11,6 @@ import java.io.InputStream;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import org.miktim.xml.builder.Node;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 import org.miktim.xml.builder.XML;
@@ -57,41 +56,38 @@ public class TestXML {
     }
 
     public static void main(String[] args) throws Exception {
-        XML xml = new XML(new Node("Root", "content").addAttr("attr","value"));
-        xml.addNode("Child");
+        XML xml = new XML("Root");
+        xml.text("content").attr("attr","value");
+        xml.add("Child");
         log(xml);
-        xml = new XML(new Node("Root"));
-        xml.setNode("Child", "content")
-                .setNode("Child");
-        xml.setNode("Child");
+        xml = new XML("Root");
+        xml.set("Child").text("text").set("Child");
+        xml.set("Child");
         log(xml);
         checkXml(xml.toString(), false);
         log("Ok");
-        xml = new XML((new Node("multistatus")).addAttr("xmlns","DAV:"));
-        xml.addComment("This is an example");
-        xml.setNode("response")
-                .addNode("href", Node.CDATA("http://www.example.com/container/"))
-                .setNode("propstat")
-                .addNode("status", "HTTP/1.1 200 OK")
-                .setNode((new Node("prop"))
-                        .addAttr("xmlns:R", "http://ns.example.com/schema/"))
-                .addNode("R:author", "John Doe")
-                .addNode("creationdate", "2026-06-12T23:20:50.52Z")
-                .addNode("displayname", "container")
-                .addNode("supportedlock");
+//        xml = new XML((new Node("multistatus")).addAttr("xmlns","DAV:"));
+        xml = new XML("multistatus");
+        xml.attr("xmlns","DAV:")
+                .comment("This is an example")
+                .set("response")
+                .add("href").cdata("http://www.example.com/container/")
+                .set("propstat")
+                .add("status").text("HTTP/1.1 200 OK")
+                .set("prop")
+                        .attr("xmlns:R", "http://ns.example.com/schema/")
+                .add("R:author", "John Doe")
+                .add("creationdate", "2026-06-12T23:20:50.52Z")
+                .add("displayname", "container")
+                .add("supportedlock");
         log(xml + "\r\n");
         checkXml(xml.toString(), true);
         log("Ok");//CRLF
-        log("XML clone");
-        if(xml.toString().equals((new XML(xml.clone())).toString()))
-            log("Ok");
-        else {
-            log("FAILED!");
-            System.exit(1);
-        }            
-        xml = new XML((new Node("ТекстовыйУзел", "текст"))
-                .addAttr("xmlns:префикс","DAV:", "attr","value\" "));
-        xml.addNode("префикс:ДочернийУзел","текст");
+
+        xml = new XML("ТекстовыйУзел");
+        xml.text("текст")
+                .attr("xmlns:префикс","DAV:", "attr","value\" ");
+        xml.add("префикс:ДочернийУзел").text("текст");
         log(xml);
         checkXml(xml.toString(), false);
         log("Ok");
@@ -100,9 +96,7 @@ public class TestXML {
         log(xml.toString(encoding));
         checkXml(xml.toString(encoding), false); // not work
         File file = new File("./test.xml");
-        FileOutputStream fos = new FileOutputStream(file);
         xml.toStream(new FileOutputStream(file), encoding);
-        fos.close();
         if (xml.toString(encoding).getBytes(encoding).length != file.length()) {
             throw new Exception("Length mismatch");
         }
@@ -111,39 +105,48 @@ public class TestXML {
         file.delete();
         log("Ok");
 
-        xml = new XML(new Node("Text.Node", "text"));
-        xml.addNode("Child.Node");
+        xml = new XML("Text.Node");
+        xml.add("text")
+            .add("Child.Node");
         log(xml);
         checkXml(xml.toString("utf-8"), false);
         log("Ok");
 
-        xml = new XML(new Node("TextNode", "text"));
-        xml.addNode(new Node("ChildTextNode", "child text"));
+        xml = new XML("TextNode");
+        xml.text("text")
+           .add("ChildTextNode").text("child text");
         log(xml);
         checkXml(xml.toString(), false);
         log("Ok");
 
-        xml = new XML(new Node("ParentNode"));
-        xml.addNode("ChildNode");
+        xml = new XML("ParentNode");
+        xml.add("ChildNode");
         log(xml);
         checkXml(xml.toString(), false);
         log("Ok");
 
-        xml = new XML((new Node("node","&<>\"'\u0080")).addAttr("attr", "\u0086&<>\"'"));
+        xml = new XML("node");
+        xml.text("&<>\"'\u0080").attr("attr", "\u0086&<>\"'");
         log(xml);
         checkXml(xml.toString(), false);
         log("Ok");
 
-        xml = new XML((new Node("node",Node.CDATA(Node.CDATA(new Node("node"))))));
+        xml = new XML("root");
+        xml.cdata(xml);
         log(xml);
         checkXml(xml.toString(), true);
         log("Ok");
 
-        xml = new XML((new XML(new Node("node")).addAttr("attr", "value")));
-        xml.addNode((new XML(new Node("node")).addAttr("attr", "value")));
-        log(xml);
-        checkXml(xml.toString(), false);
-        log("Ok");
+        xml = new XML("root");
+        xml.attr("attr", "value")
+            .add("node").attr("R:attr", "value");
+        try {
+            log(xml);
+            log("FAILED!");
+        } catch(Exception e) {
+            log(e);
+            log("Ok");
+        }
        
     }
 }

@@ -12,20 +12,20 @@ simpleXml: [https://github.com/codemonstur/simplexml](https://github.com/codemon
 . . . and others.  
   
   
-An example of using this package(Java):
+An example of using this package (Java):
 ```java
-Node rootNode = (new Node("multistatus")).addAttr("xmlns","DAV:");
-XML xml = new XML(rootNode);
-xml.setNode("response")
-     .addNode("href", Node.CDATA("http://www.example.com/container/"))
-     .setNode("propstat")
-       .addNode("status", "HTTP/1.1 200 OK")
-       .setNode((new Node("prop"))
-            .addAttr("xmlns:R", "http://ns.example.com/schema/"))
-         .addNode("R:author", "John Doe")
-         .addNode("creationdate", "2026-06-12T23:20:50.52Z")
-         .addNode("displayname", "container")
-         .addNode("supportedlock");
+XML xml = new XML("multistatus");
+xml.attr("xmlns","DAV:");
+  .set("response")
+    .add("href").cdata("http://www.example.com/container/")
+    .set("propstat")
+      .add("status").text("HTTP/1.1 200 OK")
+      .set("prop")
+          .attr("xmlns:R", "http://ns.example.com/schema/")
+        .add("R:author", "John Doe")
+        .add("creationdate", "2026-06-12T23:20:50.52Z")
+        .add("displayname", "container")
+        .add("supportedlock");
 ```  
 The xml.toString() method returns the following XML text (actually as a single line):
 ```xml

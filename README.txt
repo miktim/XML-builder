@@ -1,4 +1,4 @@
-XMLbuilder - The simple XML builder, MIT (c) 2026 miktim@mail.ru
+XML builder - The simple XML builder, MIT (c) 2026 miktim@mail.ru
 
 This is an attempt to implement the simplest XML builder
 without using Java XML packages.
@@ -8,96 +8,65 @@ using JDK1.8 for target JRE1.7
 
 package org.miktim.xml.builder;
 
-class Node;
-  Node is an XML element node.
-
-  Constructors:
-    Node(String nodeName);
-      Creates a node.
-      - checks the nodeName syntax.
-        Example:
-          new Node("prop");
-    Node(String nodeName, Object content);
-      Creates a text node.
-      - converts the content object into its String representation;
-      - checks the content string for illegal characters (0x0-0x8,...,0x7F);
-      - escapes ("<", ">", "&") the text content;
-      - the content can be null.
-        Examples:
-          new Node("R:author", "John Doe");
-          new Node("IsReadOnly", false);
-    Throws:
-      NullPointerException: when the node name is null;
-      IllegalArgumentException: when the node name is empty or syntactically incorrect.
-
-  Methods:
-    Node clone();
-      - returns a shallow copy of this Node instance:
-        the child nodes themselves are not cloned.
-
-    Node addAttr(String attrName, String attrValue);
-      Adds an attribute to the node tag.
-      - checks the value for illegal characters (0x0-0x8,...,0x7F);
-      - the attribute value will be escaped ("\"","<",">","&")
-        and enclosed in double quotes;
-      - returns this.
-    Node addAttr(String... attrs);
-      Adds attributes to the node tag.
-      - attrs are attribute name-value pairs;
-      - returns this. 
-    Throws: 
-      NullPointerException: when the name or value is null;
-      IllegalArgumentException: when the name is duplicated or syntactically incorrect.
-      ArrayIndexOutOfBoundsException: when the name-value pair is incomplete.
-
-    Node setNode(Node node);
-      - adds the node to the this (current parent) Node;
-      - avoid recursion!;
-      - returns node (new parent node).
-    Node addNode(Node node);
-      - adds the node to the this (current parent) Node.
-      - avoid recursion!;
-      - returns this (current parent node).
-    Node setNode(String nodeName);
-      - adds new node to the parent Node;
-      - returns new node.
-    Node addNode(String nodeName);
-      - adds new node to the parent Node;
-      - returns this.
-    Node setNode(String nodeName, Object content);
-      - adds new text node to the parent Node;
-      - returns new node.
-    Node addNode(String nodeName, Object content);
-      - adds new text node to the parent Node;
-      - returns this.
-
-    Node addComment(String comment)
-      - adds a comment node;
-      - comment is a text between "<!-- " and " -->";
-      - returns this.
-
-    Throws:
-      NullPointerException: when the node or node name argument is null;
-      IllegalArgumentException: when the node name is empty or syntactically incorrect.
-      
-    static String CDATA(Object content);
-      - converts the content object into its String representation
-        and creates CDATA section;
-      - escapes "]]>" with "<![CDATA[]]]><![CDATA[>]>", if any.
-
-    String toString();
-      - returns XML text as a single line.
-
 class XML extends Node;
+
   Constructor:
-    XML(Node rootNode);
-      Creates an XML with the root node.
-      XML can be used as a node.
+    XML(String rootName);
+      Creates an XML with root element.
 
   Constant:
     static String NAME_PATTERN;
       - the regex XML names pattern: [prefix:]name
+
   Methods:
+    The Node is an XML root or an element.
+
+    Node add(String name);
+      - adds an element to the parent node;
+      - the element becomes the current one;
+      - returns parent node;
+    Node set(String name);
+      - adds an element to the parent node;
+      - the element becomes the current one;
+      - returns the created element as the parent;
+    Node current();
+      - makes the parent the current;
+      - returns parent node;
+    Node attr(String name, String attrValue);
+      - adds an attribute to the current element
+      - returns parent node;
+    Node attr(String... attrs);
+      - adds attributes to the current element;
+      - attrs are attribute name-value pairs;
+      - returns parent node;
+    Node text(Object content);
+      - adds the text to the current element
+      - returns parent node;
+    Node cdata(Object content);
+      - adds CDATA section to the current element
+      - returns parent node;
+    Node comment(String content);
+      - adds comment to the parent node;
+      - returns parent node;
+    Node add(String name, Object content)
+      - same as add(name).text(content)
+    Node set(String name, Object content)
+      - same as set(name).text(content)
+
+    Throws:
+      NullPointerException: 
+        the name argument or the attribute value is null;
+      IllegalArgumentException:
+        - name is empty or syntactically incorrect;
+        - attribute name is duplicated;
+        - values contains illegal characters
+      ArrayIndexOutOfBoundsException:
+        the attributes name-value pair is incomplete.
+
+  Methods for generating well-formed XML:
+    These methods validate prefix bindings
+    and return the XML-formatted text as a single string.
+
     String toString();
       - returns XML text encoded in the JVM's DEFAULT charset.
     String toString(String charset) throws UnsupportedEncodingException;
@@ -110,29 +79,35 @@ class XML extends Node;
         to the output stream and closes this stream.
 
     Throws:
-      IllegalArgumentException: if the prefix is not bound.
+      IllegalArgumentException: the prefix is not bound.
     
-  Notes:
-    - XML text is a single line;
-    - In Java 17 and earlier, the default charset was dynamic;
-      it was determined at startup based on the user's operating system,
-      locale, and regional settings (e.g., windows-1252 on Western Windows).
+  Note:
+    In Java 17 and earlier, the default charset was dynamic;
+    it was determined at startup based on the user's operating system,
+    locale, and regional settings (e.g., windows-1252 on Western Windows).
 
 
 Example:
 
-XML xml = new XML((new Node("multistatus)).addAttr("xmlns","DAV:"));
-xml.addComment("This is an example")
-     .setNode("response")
-     .addNode("href", Node.CDATA("http://www.example.com/container/"))
-     .setNode("propstat")
-       .addNode("status", "HTTP/1.1 200 OK")
-       .setNode((new Node("prop"))
-            .addAttr("xmlns:R", "http://ns.example.com/schema/"))
-         .addNode("R:author", "John Doe")
-         .addNode("creationdate", "2026-06-12T23:20:50.52Z")
-         .addNode("displayname", "container")
-         .addNode("supportedlock");
+XML xml = new XML("multistatus");   // creates XML with root "multistatus"
+Node propstat = xml.attr("xmlns","DAV:") // adds an attribute to the "multistatus"
+     .comment("This is an example") // adds comment to the root
+     .set("response")               // adds child "response" to the root, makes it parent
+     .add("href")                   // adds child "href" to "response"
+        .cdata("http://www.example.com/container/") // adds CDATA section to the "href"
+     .set("propstat");               // adds child "propstat" to the "href", makes it parent
+// propstat root is "propstat"
+// continuation of XML generation
+propstat.set("prop")                // adds child "prop" to the "propstat", makes it parent
+        .attr("xmlns:R", "http://ns.example.com/schema/")
+     .add("R:author", "John Doe")   // same as add("R:author").text("John Doe")
+     .add("creationdate", "2026-06-12T23:20:50.52Z")
+     .add("displayname", "container")
+     .add("supportedlock");
+propstat.add("status","HTTP/1.1 200 OK"); // adds "status" to the end of the "propstat"
+// at this point
+// xml root: "multistatus", current: "multistatus"
+// propstat root: "propstat", current: "status"
 
 xml.toString() returns following XML text (actually as a single line):
 
@@ -142,13 +117,13 @@ xml.toString() returns following XML text (actually as a single line):
   <response>
     <href><![CDATA[http://www.example.com/container/]]></href>
     <propstat>
-      <status>HTTP/1.1 200 OK</status>
       <prop xmlns:R="http://ns.example.com/schema/">
         <R:author>John Doe</R:author>
         <creationdate>2026-06-12T23:20:50.52Z</creationdate>
         <displayname>container</displayname>
         <supportedlock/>
       </prop>
+      <status>HTTP/1.1 200 OK</status>
     </propstat>
   </response>
 </multistatus>

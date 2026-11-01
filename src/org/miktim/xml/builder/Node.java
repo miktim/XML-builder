@@ -1,5 +1,6 @@
 /*
  * XML builder. Node, MIT (c) 2026 miktim@mail.ru
+ * Node is XML element node.
  */
 package org.miktim.xml.builder;
 
@@ -8,7 +9,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 public class Node {
+
     Head hd = new Head();
+    Node current = this;
     
     protected class Head {
         String nodeTag = null; // node name and attributes
@@ -17,34 +20,25 @@ public class Node {
         HashSet<String> prefs = new HashSet<>(); // used prefixes
     }
 
-    protected Node() {
-
-    }
-
     public Node(String nodeName) {
         hd.nodeTag = checkName(nodeName);
         String[] names = nodeName.split(":");
-        if(names.length > 1)
+        if (names.length > 1) {
             hd.prefs.add(names[0]);
+        }
     }
 
-    public Node(String nodeName, Object content) {
-        this(nodeName);
-        if (content == null) {
-            return;
-        }
-        String text = checkChars(String.valueOf(content));
-//        if (content instanceof String) {
-            if (text.isEmpty()) {
-                return;
-            }
-            if(!isCDATA(text)){ 
-                text = escape(text);
-            }
-//        }
-        hd.nodeList.add(text);
+    public Node set(String nodeName) {
+        Node node = new Node(nodeName);
+        hd.nodeList.add(node);
+        return node;
     }
-    
+
+    public Node add(String nodeName) {
+        current = set(nodeName);
+        return this;
+    }
+
     private static String NAME_PATTERN = format("^%s$", XML.NAME_PATTERN);
 
     private static String checkName(String name) {
@@ -56,128 +50,88 @@ public class Node {
 //                throw new IllegalArgumentException("illegal name: " + name);
         return name;
     }
-    
+
     private static String checkChars(String value) {
 //        if(value.matches(".*[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u0084\u0086-\u009F].*"))
-        if(value.matches(".*[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F].*"))
+        if (value.matches(".*[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F].*")) {
             throw new IllegalArgumentException("invalid XML character");
+        }
         return value;
     }
 
-    public static String CDATA(Object content) {
-        return format("<![CDATA[%s]]>", 
-                String.valueOf(content)
-                        .replaceAll("]]>", "<![CDATA[]]]><![CDATA[>]>"));
-    }
-
-    private boolean isCDATA(String content) {
-        return content.startsWith("<![CDATA[") && content.endsWith("]]>");
-    }
-
-    public static String escape(String value) {
+    static String escapeText(String value) {
         return value
                 .replaceAll("&", "&amp;")
                 .replaceAll("<", "&lt;")
                 .replaceAll(">", "&gt;");
     }
 
-    public final Node setNode(Node node) {
-        if (node == null) {
-            throw new NullPointerException("node");
-        }
-        node = dereferenceXml(node);
-        hd.nodeList.add(node);
-        return node;
-    }
-
-    public Node addNode(Node node) {
-        if (node == null) {
-            throw new NullPointerException("node");
-        }
-        node = dereferenceXml(node);
-        hd.nodeList.add(node);
-        return this;
-    }
-
-    static Node dereferenceXml(Node node) {
-        if (node instanceof XML) {
-            Node newNode = new Node();
-            newNode.hd = node.hd;
-            return newNode;
-        }
-        return node;
-    }
-    
-    public Node addAttr(String attrName, String value) {
+    public Node attr(String attrName, String value) {
+        Head hd = current.hd;
         hd.nodeTag += format(" %s=\"%s\"",
                 checkAttr(attrName),
-                escape(checkChars(value)).replaceAll("\"", "&quot;"));
+                escapeText(checkChars(value)).replaceAll("\"", "&quot;"));
         String[] names = attrName.split(":");
-        if(names.length > 1) {
-            if(names[0].equals("xmlns"))
+        if (names.length > 1) {
+            if (names[0].equals("xmlns")) {
                 hd.nsPrefs.add(names[1]);
-            else
+            } else {
                 hd.prefs.add(names[0]);
+            }
         }
         return this;
     }
-    
-    public Node addAttr(String... attrs) {
+
+    public Node attr(String... attrs) {
         for (int i = 0; i < attrs.length; i++) {
-            addAttr(attrs[i], attrs[++i]);
+            attr(attrs[i], attrs[++i]);
         }
         return this;
     }
 
     private String checkAttr(String attrName) {
         attrName = checkName(attrName);
-        if(hd.nodeTag.contains(format(" %s=", attrName)))
+        if (current.hd.nodeTag.contains(format(" %s=", attrName))) {
             throw new IllegalArgumentException("duplicate attr: " + attrName);
+        }
         return attrName;
     }
 
-    public Node setNode(String nodeName) {
-        Node node = new Node(nodeName);
-        return setNode(node);
-    }
-
-    public Node addNode(String nodeName) {
-        Node node = new Node(nodeName);
-        return addNode(node);
-    }
-
-    public Node addNode(String nodeName, Object content) {
-        Node node = new Node(nodeName, content);
-        return addNode(node);
-    }
-
-    public Node setNode(String nodeName, Object content) {
-        Node node = new Node(nodeName, content);
-        return setNode(node);
-    }
-
-    public Node addComment(String comment) {
-        if(comment.contains("--") || comment.endsWith("-"))
-            throw new IllegalArgumentException("illegal comment");
-        hd.nodeList.add(format("<!-- %s -->",comment));
+    public Node text(Object content) {
+        if (content == null) {
+            return this;
+        }
+        String text = escapeText(checkChars(String.valueOf(content)));
+        if (text.isEmpty()) {
+            return this;
+        }
+        current.hd.nodeList.add(text);
         return this;
     }
-/*    
-    public Node addDoctype(String doctype) {
-        nodeList.add(format("<!DOCTYPE %s>",doctype));
-        return this;
+
+    public Node add(String name, Object content) {
+        return add(name).text(content);
     }
-*/
-    @Override
-    public Node clone() {
-        Node clone = new Node();
-        clone.hd.nodeTag = hd.nodeTag;
-        clone.hd.nodeList = new ArrayList<Object>(hd.nodeList);
-        clone.hd.nsPrefs = new HashSet<String>(hd.nsPrefs);
-        clone.hd.prefs = new HashSet<String>(hd.prefs);
-        return clone;
+    public Node set(String name, Object content) {
+        return set(name).text(content);
     }
     
+    public Node cdata(Object content) {
+        String text = format("<![CDATA[%s]]>",
+                String.valueOf(content)
+                        .replaceAll("]]>", "<![CDATA[]]]><![CDATA[>]>"));
+        current.hd.nodeList.add(text);
+        return this;
+    }
+
+    public Node comment(String comment) {
+        if (comment.contains("--") || comment.endsWith("-")) {
+            throw new IllegalArgumentException("illegal comment");
+        }
+        hd.nodeList.add(format("<!-- %s -->", comment));
+        return this;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
