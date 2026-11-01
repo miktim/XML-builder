@@ -38,7 +38,12 @@ public class Node {
         current = set(nodeName);
         return this;
     }
-
+    
+    public Node current() {
+        current = this;
+        return this;
+    }
+    
     private static String NAME_PATTERN = format("^%s$", XML.NAME_PATTERN);
 
     private static String checkName(String name) {
