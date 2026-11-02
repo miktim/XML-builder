@@ -32,6 +32,7 @@ class XML extends Node;
     Node current();
       - makes the parent the current;
       - returns parent node;
+
     Node attr(String name, String attrValue);
       - adds an attribute to the current element
       - returns parent node;
@@ -40,18 +41,19 @@ class XML extends Node;
       - attrs are attribute name-value pairs;
       - returns parent node;
     Node text(Object content);
-      - adds the text to the current element
+      - adds the text to the current element content
       - returns parent node;
     Node cdata(Object content);
       - adds CDATA section to the current element
       - returns parent node;
-    Node comment(String content);
-      - adds comment to the parent node;
-      - returns parent node;
+
     Node add(String name, Object content)
       - same as add(name).text(content)
     Node set(String name, Object content)
       - same as set(name).text(content)
+    Node comment(String content);
+      - adds comment to the parent node;
+      - returns parent node;
 
     Throws:
       NullPointerException: 
@@ -69,12 +71,12 @@ class XML extends Node;
 
     String toString();
       - returns XML text encoded in the JVM's DEFAULT charset.
-    String toString(String charset) throws UnsupportedEncodingException;
+    String toString(String charsetName) throws UnsupportedEncodingException;
       - returns XML text encoded in the specified charset.
     void toStream(OutputStream out) throws IOException;
       - writes XML text, encoded in the JVM's DEFAULT charset,
         to the output stream and closes this stream.
-    void toStream(OutputStream out, String charset) throws IOException;
+    void toStream(OutputStream out, String charsetName) throws IOException;
       - writes XML text, encoded in the specified charset,
         to the output stream and closes this stream.
 
@@ -89,14 +91,15 @@ class XML extends Node;
 
 Example:
 
-XML xml = new XML("multistatus");   // creates XML with root "multistatus"
+XML xml = new XML("multistatus");   // creates XML with root element "multistatus"
 Node propstat = xml.attr("xmlns","DAV:") // adds an attribute to the "multistatus"
-     .comment("This is an example") // adds comment to the root
+     .comment("This is an example") // adds comment to the root content
      .set("response")               // adds child "response" to the root, makes it parent
-     .add("href")                   // adds child "href" to "response"
+     .add("href")                   // adds child "href" to the "response"
         .cdata("http://www.example.com/container/") // adds CDATA section to the "href"
-     .set("propstat");               // adds child "propstat" to the "href", makes it parent
-// propstat root is "propstat"
+     .set("propstat");               // adds child "propstat" to the "response", makes it parent
+// propstat root element is "propstat"
+
 // continuation of XML generation
 propstat.set("prop")                // adds child "prop" to the "propstat", makes it parent
         .attr("xmlns:R", "http://ns.example.com/schema/")
@@ -104,7 +107,8 @@ propstat.set("prop")                // adds child "prop" to the "propstat", make
      .add("creationdate", "2026-06-12T23:20:50.52Z")
      .add("displayname", "container")
      .add("supportedlock");
-propstat.add("status","HTTP/1.1 200 OK"); // adds "status" to the end of the "propstat"
+propstat.add("status","HTTP/1.1 200 OK"); // adds "status" to the end of the "propstat" content
+
 // at this point
 // xml root: "multistatus", current: "multistatus"
 // propstat root: "propstat", current: "status"
