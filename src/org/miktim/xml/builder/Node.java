@@ -46,7 +46,7 @@ public class Node {
     
     private static String NAME_PATTERN = format("^%s$", XML.NAME_PATTERN);
 
-    private static String checkName(String name) {
+    static String checkName(String name) {
         if (!name.matches(NAME_PATTERN)) {
             throw new IllegalArgumentException("illegal name: " + name);
         }
@@ -56,7 +56,7 @@ public class Node {
         return name;
     }
 
-    private static String checkChars(String value) {
+    static String checkChars(String value) {
 //        if(value.matches(".*[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u0084\u0086-\u009F].*"))
         if (value.matches(".*[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F].*")) {
             throw new IllegalArgumentException("invalid XML character");
@@ -133,7 +133,7 @@ public class Node {
         if (comment.contains("--") || comment.endsWith("-")) {
             throw new IllegalArgumentException("illegal comment");
         }
-        hd.nodeList.add(format("<!-- %s -->", comment));
+        current.hd.nodeList.add(format("<!-- %s -->", comment));
         return this;
     }
 

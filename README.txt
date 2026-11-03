@@ -14,10 +14,6 @@ class XML extends Node;
     XML(String rootName);
       Creates an XML with root element.
 
-  Constant:
-    static String NAME_PATTERN;
-      - the regex XML names pattern: [prefix:]name
-
   Methods:
     The Node is an XML root or an element.
 
@@ -28,7 +24,7 @@ class XML extends Node;
     Node set(String name);
       - adds an element to the parent node;
       - the element becomes the current one;
-      - returns the created element as the parent;
+      - returns this element as the parent;
     Node current();
       - makes the parent the current;
       - returns parent node;
@@ -52,16 +48,16 @@ class XML extends Node;
     Node set(String name, Object content)
       - same as set(name).text(content)
     Node comment(String content);
-      - adds comment to the parent node;
+      - adds comment to the current node content;
       - returns parent node;
 
     Throws:
       NullPointerException: 
         the name argument or the attribute value is null;
       IllegalArgumentException:
-        - name is empty or syntactically incorrect;
-        - attribute name is duplicated;
-        - values contains illegal characters
+        - the name is empty or syntactically incorrect;
+        - the attribute name is duplicated;
+        - the value contains illegal characters
       ArrayIndexOutOfBoundsException:
         the attributes name-value pair is incomplete.
 
@@ -115,7 +111,7 @@ propstat.add("status","HTTP/1.1 200 OK"); // adds "status" to the end of the "pr
 
 xml.toString() returns following XML text (actually as a single line):
 
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <multistatus xmlns="DAV:">
   <!-- This is an example -->
   <response>
