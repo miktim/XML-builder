@@ -1,6 +1,8 @@
+4.0.2
+  - fixed Node: "xml" as attribute prefix
 4.0.1
   - fixed Node: comments are added to the content of the current node
-    (not the parent node).
+    (not to the parent node).
 4.0.0
   - simplified Node, XML
 3.2.4

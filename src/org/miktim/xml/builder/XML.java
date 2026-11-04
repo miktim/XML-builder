@@ -15,7 +15,7 @@ public class XML extends Node {
     public XML(String nodeName) {
         super(nodeName);
     }
-    
+
     public static final String NAME_PATTERN
             = "([_\\p{L}][._\\p{L}0-9]*)(:([_\\p{L}][._\\p{L}0-9]*))*";
 
@@ -38,8 +38,8 @@ public class XML extends Node {
 
     public void toStream(OutputStream out, String charsetName) throws IOException {
         checkPrefs(this, new HashSet<String>());
-        byte[] bytes = 
-                (getDeclaration(charsetName) + super.toString()).getBytes(charsetName);
+        byte[] bytes
+                = (getDeclaration(charsetName) + super.toString()).getBytes(charsetName);
         out.write(bytes);
         out.flush();
         out.close();
@@ -53,14 +53,18 @@ public class XML extends Node {
     private void checkPrefs(Node node, HashSet<String> nsPrefs) {
         HashSet<String> thisNsPrefs = new HashSet<>(nsPrefs); // keep nsPrefs
         thisNsPrefs.addAll(node.hd.nsPrefs);
-        for(String pref : node.hd.prefs) {
-            if(!thisNsPrefs.contains(pref))
-                throw new IllegalArgumentException("prefix is not bound: " + pref);
+        for (String pref : node.hd.prefs) {
+            if (!thisNsPrefs.contains(pref)) {
+                throw new IllegalArgumentException(
+                        format("prefix \"%s\" with an element \"%s\" is not bound",
+                                 node.hd.nodeTag.split(" ")[0], pref));
+            }
         }
 // scan nodeList
-        for(Object entry : node.hd.nodeList) {
-            if(entry instanceof Node)
-                checkPrefs((Node)entry, thisNsPrefs);
+        for (Object entry : node.hd.nodeList) {
+            if (entry instanceof Node) {
+                checkPrefs((Node) entry, thisNsPrefs);
+            }
         }
     }
 }

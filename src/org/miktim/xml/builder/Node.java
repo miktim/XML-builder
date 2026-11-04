@@ -48,18 +48,16 @@ public class Node {
 
     static String checkName(String name) {
         if (!name.matches(NAME_PATTERN)) {
-            throw new IllegalArgumentException("illegal name: " + name);
+            throw new IllegalArgumentException(
+                    format("illegal name \"%s\"", name));
         }
-//        for(String nm : name.toLowerCase().split(":"))
-//            if(!nm.equals("xmlns") && nm.startsWith("xml"))
-//                throw new IllegalArgumentException("illegal name: " + name);
         return name;
     }
 
     static String checkChars(String value) {
 //        if(value.matches(".*[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u0084\u0086-\u009F].*"))
         if (value.matches(".*[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F].*")) {
-            throw new IllegalArgumentException("invalid XML character");
+            throw new IllegalArgumentException("invalid XML character was found");
         }
         return value;
     }
@@ -80,7 +78,7 @@ public class Node {
         if (names.length > 1) {
             if (names[0].equals("xmlns")) {
                 hd.nsPrefs.add(names[1]);
-            } else {
+            } else if (!names[0].equals("xml")) {
                 hd.prefs.add(names[0]);
             }
         }
@@ -95,9 +93,9 @@ public class Node {
     }
 
     private String checkAttr(String attrName) {
-        attrName = checkName(attrName);
-        if (current.hd.nodeTag.contains(format(" %s=", attrName))) {
-            throw new IllegalArgumentException("duplicate attr: " + attrName);
+        if (current.hd.nodeTag.contains(format(" %s=", checkName(attrName)))) {
+            throw new IllegalArgumentException(
+                    format("duplicate attribute \"%s\"", attrName));
         }
         return attrName;
     }

@@ -15,7 +15,7 @@ class XML extends Node;
       Creates an XML with root element.
 
   Methods:
-    The Node is an XML root or an element.
+    The Node is an XML or an element.
 
     Node add(String name);
       - adds an element to the parent node;
@@ -56,8 +56,8 @@ class XML extends Node;
         the name argument or the attribute value is null;
       IllegalArgumentException:
         - the name is empty or syntactically incorrect;
-        - the attribute name is duplicated;
-        - the value contains illegal characters
+        - the attribute is duplicated;
+        - the text or attribute value contains illegal characters
       ArrayIndexOutOfBoundsException:
         the attributes name-value pair is incomplete.
 
