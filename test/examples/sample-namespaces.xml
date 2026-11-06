@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns="http://example.com/default"
+      xmlns:a="http://example.com/a"
+      xmlns:b="http://example.com/b">
+  <item id="1">
+    <a:title>Title in namespace A</a:title>
+    <b:title>Title in namespace B</b:title>
+    <description>Description in default namespace</description>
+  </item>
+  <a:section xmlns="http://example.com/inner-default">
+    <heading>This heading is in the inner default namespace</heading>
+    <a:label>This is in namespace A</a:label>
+    <b:label>This is in namespace B</b:label>
+    <subsection xmlns:a="http://example.com/a-redefined">
+      <a:note>Namespace A is redefined here to a different URI</a:note>
+    </subsection>
+  </a:section>
+  <empty-prefix xmlns="">
+    <plain>This element has no namespace (xmlns="")</plain>
+  </empty-prefix>
+</root>

@@ -2,6 +2,7 @@ XML builder - The simple XML builder, MIT (c) 2026 miktim@mail.ru
 
 This is an attempt to implement the simplest XML builder
 without using Java XML packages.
+Custom XML entities are not supported.
 
 The jar ./dist/xml-builder-... file was generated with debugging info
 using JDK1.8 for target JRE1.7
@@ -25,7 +26,7 @@ class XML extends Node;
       - adds an element to the parent node;
       - the element becomes the current one;
       - returns this element as the parent;
-    Node current();
+    Node parent();
       - makes the parent the current;
       - returns parent node;
 
@@ -70,11 +71,11 @@ class XML extends Node;
     String toString(String charsetName) throws UnsupportedEncodingException;
       - returns XML text encoded in the specified charset.
     void toStream(OutputStream out) throws IOException;
-      - writes XML text, encoded in the JVM's DEFAULT charset,
-        to the output stream and closes this stream.
+      - writes XML text, encoded in the UTF-8 charset, to the output stream. 
+        The stream remains open and you must close it manually.
     void toStream(OutputStream out, String charsetName) throws IOException;
-      - writes XML text, encoded in the specified charset,
-        to the output stream and closes this stream.
+      - writes XML text, encoded in the specified charset, to the output stream.
+        The stream remains open and you must close it manually.
 
     Throws:
       IllegalArgumentException: the prefix is not bound.
@@ -87,43 +88,25 @@ class XML extends Node;
 
 Example:
 
-XML xml = new XML("multistatus");   // creates XML with root element "multistatus"
-Node propstat = xml.attr("xmlns","DAV:") // adds an attribute to the "multistatus"
-     .comment("This is an example") // adds comment to the root content
-     .set("response")               // adds child "response" to the root, makes it parent
-     .add("href")                   // adds child "href" to the "response"
-        .cdata("http://www.example.com/container/") // adds CDATA section to the "href"
-     .set("propstat");               // adds child "propstat" to the "response", makes it parent
-// propstat root element is "propstat"
+xml = new XML("root");
+a = xml.set("a");
+a.set("b").text("text b")
+  .add("c")
+  .add("d").text("text d")
+  .parent().text("text b");
+a.set("e").text("text e")
+  .add("f")
+  .add("g").text("text g")
+  .parent().text("text e");
+     
+xml.toString() returns the following XML text 
+(in fact, as a single line):
 
-// continuation of XML generation
-propstat.set("prop")                // adds child "prop" to the "propstat", makes it parent
-        .attr("xmlns:R", "http://ns.example.com/schema/")
-     .add("R:author", "John Doe")   // same as add("R:author").text("John Doe")
-     .add("creationdate", "2026-06-12T23:20:50.52Z")
-     .add("displayname", "container")
-     .add("supportedlock");
-propstat.add("status","HTTP/1.1 200 OK"); // adds "status" to the end of the "propstat" content
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <a>
+    <b>text b<c/><d>text d</d>text b</b>
+    <e>text e<f/><g>text g</g>text e</e>
+  </a>
+</root>
 
-// at this point
-// xml root: "multistatus", current: "multistatus"
-// propstat root: "propstat", current: "status"
-
-xml.toString() returns following XML text (actually as a single line):
-
-<?xml version="1.0" encoding="utf-8"?>
-<multistatus xmlns="DAV:">
-  <!-- This is an example -->
-  <response>
-    <href><![CDATA[http://www.example.com/container/]]></href>
-    <propstat>
-      <prop xmlns:R="http://ns.example.com/schema/">
-        <R:author>John Doe</R:author>
-        <creationdate>2026-06-12T23:20:50.52Z</creationdate>
-        <displayname>container</displayname>
-        <supportedlock/>
-      </prop>
-      <status>HTTP/1.1 200 OK</status>
-    </propstat>
-  </response>
-</multistatus>

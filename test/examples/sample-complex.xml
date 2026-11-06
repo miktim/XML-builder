@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<po:PurchaseOrder
+    xmlns:po="http://example.com"
+    xmlns:xsi="http://w3.org"
+    xsi:schemaLocation="http://example.com schema.xsd"
+    orderId="PO-2026-99503"
+    orderDate="2026-11-05T08:00:00Z"
+    priority="high"
+    status="confirmed">
+
+    <po:Customer customerId="CUST-45812">
+        <po:Name>
+            <po:FirstName>Ellen</po:FirstName>
+            <po:LastName>Adams</po:LastName>
+        </po:Name>
+        <po:Contact>
+            <po:Email>ellen.adams@example.com</po:Email>
+            <po:Phone type="mobile">+1-555-0199</po:Phone>
+        </po:Contact>
+    </po:Customer>
+
+    <po:Addresses>
+        <po:ShippingAddress type="residence">
+            <po:Street>123 Maple Street</po:Street>
+            <po:City>Mill Valley</po:City>
+            <po:State>CA</po:State>
+            <po:PostalCode>10999</po:PostalCode>
+            <po:Country>USA</po:Country>
+        </po:ShippingAddress>
+        <po:BillingAddress type="office">
+            <po:Street>8 Oak Avenue</po:Street>
+            <po:City>Old Town</po:City>
+            <po:State>PA</po:State>
+            <po:PostalCode>95819</po:PostalCode>
+            <po:Country>USA</po:Country>
+        </po:BillingAddress>
+    </po:Addresses>
+
+    <po:DeliveryInstructions>
+        <po:Note>Please leave packages in shed by driveway.</po:Note>
+        <po:SignatureRequired>false</po:SignatureRequired>
+    </po:DeliveryInstructions>
+
+    <po:Items>
+        <po:Item itemId="ITEM-1" sku="872-AA">
+            <po:Description>Lawnmower (Electric)</po:Description>
+            <po:Quantity units="pcs">1</po:Quantity>
+            <po:Price currency="USD">148.95</po:Price>
+            <po:Comment>Confirm this is electric</po:Comment>
+        </po:Item>
+        <po:Item itemId="ITEM-2" sku="926-AA">
+            <po:Description>Baby Monitor</po:Description>
+            <po:Quantity units="pcs">2</po:Quantity>
+            <po:Price currency="USD">39.98</po:Price>
+            <po:ShipDate>2026-05-21</po:ShipDate>
+        </po:Item>
+    </po:Items>
+
+    <po:Totals>
+        <po:Subtotal currency="USD">188.93</po:Subtotal>
+        <po:Tax currency="USD">15.11</po:Tax>
+        <po:ShippingCost currency="USD">12.00</po:ShippingCost>
+        <po:GrandTotal currency="USD">216.04</po:GrandTotal>
+    </po:Totals>
+
+</po:PurchaseOrder>

@@ -72,6 +72,7 @@ public class TestNode {
         testNode(node, expected);
 
         try {
+// illegal attribute name
             node = (new Node("node")).text("text").attr(" attr","abcd");
             logErr(node + "\r\nFailed!");
         } catch (Exception e) {

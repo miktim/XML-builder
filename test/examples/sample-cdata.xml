@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<documents>
+  <doc id="1">
+    <title>HTML inside CDATA</title>
+    <body><![CDATA[<html><body><h1>This is <em>HTML</em> content</h1><p>No need to escape & or < or > inside CDATA.</p></body></html>]]></body>
+  </doc>
+  <doc id="2">
+    <title>Code snippet inside CDATA</title>
+    <body><![CDATA[
+function compare(a, b) {
+  if (a < b) return -1;
+  if (a > b) return 1;
+  return 0;  // a === b
+}
+    ]]></body>
+  </doc>
+  <doc id="3">
+    <title>CDATA containing the end-of-CDATA sequence</title>
+    <body><![CDATA[The literal sequence ]]]]><![CDATA[> is split across two CDATA sections to embed it.]]></body>
+  </doc>
+  <doc id="4">
+    <title>Mixed CDATA and entity-escaped text</title>
+    <body>Before CDATA &amp; some entities &lt;tag&gt;<![CDATA[ Inside CDATA: <raw> & "quotes" without escaping ]]>After CDATA &amp; more.</body>
+  </doc>
+</documents>

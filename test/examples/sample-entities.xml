@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog [
+  <!ENTITY copy "&#169;">
+  <!ENTITY trade "&#8482;">
+  <!ENTITY company "Acme Corporation">
+  <!ENTITY tagline "the world's finest products since 1950">
+  <!ENTITY full-name "&company; — &tagline;">
+]>
+<catalog>
+  <header>&full-name; &copy; 2026</header>
+  <product>
+    <name>Widget&trade;</name>
+    <maker>&company;</maker>
+    <description>A genuine &company; product. &copy; All rights reserved.</description>
+  </product>
+  <product>
+    <name>Gadget&trade;</name>
+    <maker>&company;</maker>
+    <description>Built-in entities also work: less-than &lt;, greater-than &gt;, ampersand &amp;, apostrophe &apos;, quote &quot;.</description>
+  </product>
+  <note>This file uses internal DTD entities only. No external entities (XXE-safe).</note>
+</catalog>

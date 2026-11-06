@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+               xmlns:cat="http://samplelib.com/catalog">
+  <soap:Body>
+    <cat:GetBookResponse>
+      <cat:Book id="b2" lang="en">
+        <cat:Title>Clean Code</cat:Title>
+        <cat:Author>Robert C. Martin</cat:Author>
+        <cat:Year>2008</cat:Year>
+        <cat:Price currency="USD">34.50</cat:Price>
+      </cat:Book>
+    </cat:GetBookResponse>
+  </soap:Body>
+</soap:Envelope>

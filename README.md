@@ -1,5 +1,5 @@
-
 This is an attempt to implement the simplest XML builder without using Java XML packages.  
+Custom XML entities are not supported.  
 
 Look First:  
 XMLBuilder: [https://github.com/simonemmott/XMLBuilder](https://github.com/simonemmott/XMLBuilder)  
@@ -14,38 +14,37 @@ simpleXml: [https://github.com/codemonstur/simplexml](https://github.com/codemon
   
 An example of using this package (Java):
 ```java
-XML xml = new XML("multistatus");
-xml.attr("xmlns","DAV:")
-  .set("response")
-    .add("href").cdata("http://www.example.com/container/")
-    .set("propstat")
-      .add("status").text("HTTP/1.1 200 OK")
-      .set("prop")
-          .attr("xmlns:R", "http://ns.example.com/schema/")
-        .add("R:author", "John Doe")
-        .add("creationdate", "2026-06-12T23:20:50.52Z")
-        .add("displayname", "container")
-        .add("supportedlock");
+XML xml = new XML("soap:Envelope");
+xml.attr(
+    "xmlns:soap", "http://schemas.xmlsoap.org/soap/envelope/",
+    "xmlns:cat", "http://samplelib.com/catalog");
+xml.set("soap:Header")
+  .set("cat:Auth")
+    .add("cat:Token","b3f1c2d4-5e6a-4b7c-8d9e-0f1a2b3c4d5e");
+xml.set("soap:Body")
+  .set("cat:GetBookRequest")
+    .add("cat:BookId", "b2")
+    .add("cat:IncludePrice", true);       
 ```  
-The xml.toString() method returns the following XML text (actually as a single line):
+The xml.toString() returns following well-formed XML text (actually as a single line):
 ```xml
-<?xml version="1.0" encoding="utf-8"?>
-<multistatus xmlns="DAV:">
-  <response>
-    <href><![CDATA[http://www.example.com/container/]]></href>
-    <propstat>
-      <status>HTTP/1.1 200 OK</status>
-      <prop xmlns:R="http://ns.example.com/schema/">
-        <R:author>John Doe</R:author>
-        <creationdate>2026-06-12T23:20:50.52Z</creationdate>
-        <displayname>container</displayname>
-        <supportedlock/>
-      </prop>
-    </propstat>
-  </response>
-</multistatus>
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:cat="http://samplelib.com/catalog">
+  <soap:Header>
+    <cat:Auth>
+      <cat:Token>b3f1c2d4-5e6a-4b7c-8d9e-0f1a2b3c4d5e</cat:Token>
+    </cat:Auth>
+  </soap:Header>
+  <soap:Body>
+    <cat:GetBookRequest>
+      <cat:BookId>b2</cat:BookId>
+      <cat:IncludePrice>true</cat:IncludePrice>
+    </cat:GetBookRequest>
+  </soap:Body>
+</soap:Envelope>
 ```  
 Package help: [./README.txt](./README.txt)  
+Examples: [./test/examples/](./test/examples)  
 The latest version of the package is here: [./dist](./dist)  
  
 

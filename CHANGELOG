@@ -1,5 +1,10 @@
+4.1.0
+  - Node: add(Node) method added
+4.0.3
+  - fixed XML: toStream() default charset is UTF-8
+    The stream remains open and you must close it manually.
 4.0.2
-  - fixed Node: "xml" as attribute prefix
+  - fixed Node: "xml" as an attribute prefix
 4.0.1
   - fixed Node: comments are added to the content of the current node
     (not to the parent node).

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+               xmlns:cat="http://samplelib.com/catalog">
+  <soap:Header>
+    <cat:Auth>
+      <cat:Token>b3f1c2d4-5e6a-4b7c-8d9e-0f1a2b3c4d5e</cat:Token>
+    </cat:Auth>
+  </soap:Header>
+  <soap:Body>
+    <cat:GetBookRequest>
+      <cat:BookId>b2</cat:BookId>
+      <cat:IncludePrice>true</cat:IncludePrice>
+    </cat:GetBookRequest>
+  </soap:Body>
+</soap:Envelope>

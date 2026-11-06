@@ -19,7 +19,7 @@ public class Node {
         HashSet<String> nsPrefs = new HashSet<>(); // declared prefixes
         HashSet<String> prefs = new HashSet<>(); // used prefixes
     }
-
+    
     public Node(String nodeName) {
         hd.nodeTag = checkName(nodeName);
         String[] names = nodeName.split(":");
@@ -33,18 +33,17 @@ public class Node {
         hd.nodeList.add(node);
         return node;
     }
-
     public Node add(String nodeName) {
         current = set(nodeName);
         return this;
     }
     
-    public Node current() {
+    public Node parent() {
         current = this;
         return this;
     }
     
-    private static String NAME_PATTERN = format("^%s$", XML.NAME_PATTERN);
+    private static final String NAME_PATTERN = format("^%s$", XML.NAME_PATTERN);
 
     static String checkName(String name) {
         if (!name.matches(NAME_PATTERN)) {

@@ -18,7 +18,7 @@ public class XML extends Node {
 
     public static final String NAME_PATTERN
             = "([_\\p{L}][._\\p{L}0-9]*)(:([_\\p{L}][._\\p{L}0-9]*))*";
-
+    
     @Override
     public String toString() {
         checkPrefs(this, new HashSet<String>());
@@ -33,7 +33,8 @@ public class XML extends Node {
     }
 
     public void toStream(OutputStream out) throws IOException {
-        toStream(out, Charset.defaultCharset().toString());
+//        toStream(out, Charset.defaultCharset().toString());
+        toStream(out, "UTF-8");
     }
 
     public void toStream(OutputStream out, String charsetName) throws IOException {
@@ -42,7 +43,7 @@ public class XML extends Node {
                 = (getDeclaration(charsetName) + super.toString()).getBytes(charsetName);
         out.write(bytes);
         out.flush();
-        out.close();
+//        out.close();
     }
 
     private String getDeclaration(String charset) {
