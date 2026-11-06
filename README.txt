@@ -62,9 +62,9 @@ class XML extends Node;
       ArrayIndexOutOfBoundsException:
         the attributes name-value pair is incomplete.
 
-  Methods for generating well-formed XML:
-    These methods validate prefix bindings
-    and return the XML-formatted text as a single string.
+  Methods for creating well-formed XML:
+    These methods check prefix bindings
+    and generate text in XML format as a single line.
 
     String toString();
       - returns XML text encoded in the JVM's DEFAULT charset.
@@ -88,8 +88,8 @@ class XML extends Node;
 
 Example:
 
-xml = new XML("root");
-a = xml.set("a");
+XML xml = new XML("root");
+Node a = xml.set("a");
 a.set("b").text("text b")
   .add("c")
   .add("d").text("text d")
@@ -99,7 +99,7 @@ a.set("e").text("text e")
   .add("g").text("text g")
   .parent().text("text e");
      
-xml.toString() returns the following XML text 
+xml.toString() method returns the following XML text 
 (in fact, as a single line):
 
 <?xml version="1.0" encoding="UTF-8"?>
