@@ -1,5 +1,6 @@
-4.1.0
-  - Node: add(Node) method added
+4.0.4
+  - fixed XML: prefix not bound error message
+  - fixed CHANGELOG
 4.0.3
   - fixed XML: toStream() default charset is UTF-8
     The stream remains open and you must close it manually.

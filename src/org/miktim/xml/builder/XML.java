@@ -58,7 +58,7 @@ public class XML extends Node {
             if (!thisNsPrefs.contains(pref)) {
                 throw new IllegalArgumentException(
                         format("prefix \"%s\" with an element \"%s\" is not bound",
-                                 node.hd.nodeTag.split(" ")[0], pref));
+                                 pref, node.hd.nodeTag.split(" ")[0]));
             }
         }
 // scan nodeList

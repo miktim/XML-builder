@@ -92,12 +92,11 @@ XML xml = new XML("root");
 Node a = xml.set("a");
 a.set("b").text("text b")
   .add("c")
-  .add("d").text("text d")
+  .add("d").text("text d");
+a.set("b")
+  .add("c").text("text c")
+  .add("d")
   .parent().text("text b");
-a.set("e").text("text e")
-  .add("f")
-  .add("g").text("text g")
-  .parent().text("text e");
      
 xml.toString() method returns the following XML text 
 (in fact, as a single line):
@@ -105,8 +104,8 @@ xml.toString() method returns the following XML text
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
   <a>
-    <b>text b<c/><d>text d</d>text b</b>
-    <e>text e<f/><g>text g</g>text e</e>
+    <b>text b<c/><d>text d</d></b>
+    <b><c>text c</c><d/>text b</b>
   </a>
 </root>
 
