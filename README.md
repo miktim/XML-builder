@@ -1,6 +1,6 @@
 This is an attempt to implement the simplest XML builder without using Java XML packages.  
-Custom XML entities are not supported.  
-
+Custom XML entities and XSD validation are not supported.  
+  
 Look First:  
 XMLBuilder: [https://github.com/simonemmott/XMLBuilder](https://github.com/simonemmott/XMLBuilder)  
   

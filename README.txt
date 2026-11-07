@@ -2,7 +2,7 @@ XML builder - The simple XML builder, MIT (c) 2026 miktim@mail.ru
 
 This is an attempt to implement the simplest XML builder
 without using Java XML packages.
-Custom XML entities are not supported.
+Custom XML entities and XSD validation are not supported.
 
 The jar ./dist/xml-builder-... file was generated with debugging info
 using JDK1.8 for target JRE1.7
@@ -109,3 +109,4 @@ xml.toString() method returns the following XML text
   </a>
 </root>
 
+See also: ./test/examples/

@@ -1,5 +1,5 @@
 The samples are taken from the website https://samplelib.com/sample-xml.html .
-To run an example from the "example" directory,
+To run an example from this directory,
 enter the following in the command line:
 
 > javac -cp ../../dist/xml-builder-<version> <ExampleName>.java
