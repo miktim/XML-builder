@@ -86,8 +86,8 @@ public class TestXML {
 
         xml = new XML("ТекстовыйУзел");
         xml.text("текст")
-                .attr("xmlns:префикс","DAV:", "attr","value\" ");
-        xml.add("префикс:ДочернийУзел").text("текст");
+                .attr("xmlns:префикс-д","DAV:", "attr","value\" ");
+        xml.add("префикс-д:ДочернийУзел").text("текст");
         log(xml);
         checkXml(xml.toString(), false);
         log("Ok");
@@ -139,8 +139,19 @@ public class TestXML {
 
         xml = new XML("root");
         xml.attr("attr", "value")
-            .add("node").attr("R:attr", "value");
+            .add("node").attr("R:attr", "value"); // unbounded prefix
         try {
+            log(xml);
+            log("FAILED!");
+        } catch(Exception e) {
+            log(e);
+            log("Ok");
+        }
+       
+        xml = new XML("root");
+        try {
+            xml.attr("xmlns:D", "   ") // empty prefixed namespace
+              .add("node").attr("D:attr", "value");
             log(xml);
             log("FAILED!");
         } catch(Exception e) {

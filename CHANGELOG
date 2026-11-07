@@ -1,5 +1,9 @@
+4.0.5
+  - fixed: allows the use of a hyphen ( – ) in XML names;
+  - fixed: checks empty prefixed namespace binding;
+  - examples: ExampleNamespaces added
 4.0.4
-  - fixed XML: prefix not bound error message
+  - fixed XML: prefix not bound error message;
   - fixed CHANGELOG
 4.0.3
   - fixed XML: toStream() default charset is UTF-8

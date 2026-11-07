@@ -12,14 +12,15 @@ public class Node {
 
     Head hd = new Head();
     Node current = this;
-    
+
     protected class Head {
+
         String nodeTag = null; // node name and attributes
         ArrayList<Object> nodeList = new ArrayList<>(); // text and child nodes
         HashSet<String> nsPrefs = new HashSet<>(); // declared prefixes
         HashSet<String> prefs = new HashSet<>(); // used prefixes
     }
-    
+
     public Node(String nodeName) {
         hd.nodeTag = checkName(nodeName);
         String[] names = nodeName.split(":");
@@ -33,16 +34,17 @@ public class Node {
         hd.nodeList.add(node);
         return node;
     }
+
     public Node add(String nodeName) {
         current = set(nodeName);
         return this;
     }
-    
+
     public Node parent() {
         current = this;
         return this;
     }
-    
+
     private static final String NAME_PATTERN = format("^%s$", XML.NAME_PATTERN);
 
     static String checkName(String name) {
@@ -76,6 +78,10 @@ public class Node {
         String[] names = attrName.split(":");
         if (names.length > 1) {
             if (names[0].equals("xmlns")) {
+                if (value.trim().isEmpty()) {
+                    throw new IllegalArgumentException(
+                            format("prefixed namespace bindings may not be empty: \"%s\"", attrName));
+                }
                 hd.nsPrefs.add(names[1]);
             } else if (!names[0].equals("xml")) {
                 hd.prefs.add(names[0]);
@@ -114,10 +120,11 @@ public class Node {
     public Node add(String name, Object content) {
         return add(name).text(content);
     }
+
     public Node set(String name, Object content) {
         return set(name).text(content);
     }
-    
+
     public Node cdata(Object content) {
         String text = format("<![CDATA[%s]]>",
                 String.valueOf(content)

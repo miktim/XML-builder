@@ -17,7 +17,7 @@ public class XML extends Node {
     }
 
     public static final String NAME_PATTERN
-            = "([_\\p{L}][._\\p{L}0-9]*)(:([_\\p{L}][._\\p{L}0-9]*))*";
+            = "([_\\p{L}][-._\\p{L}0-9]*)(:([_\\p{L}][-._\\p{L}0-9]*))*";
     
     @Override
     public String toString() {
